@@ -23,5 +23,13 @@ def add_student(student : Student):
     conn.close()
     return{"message" : "Student added succesfully"}
 
-    
-    
+
+@app.get("/students") 
+def get_students(): 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students")
+    rows = cursor.fetchall()
+    conn.close()
+    return{"students" : [dict(row) for row in rows]}
+
