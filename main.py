@@ -55,4 +55,13 @@ def delete_student(student_id: int):
     return{"message" : "Student deleted succesfully"}
 
 
+@app.put("/students/{student_id}")
+def put_student(student_id: int, student: Student): 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
+    conn.commit()
+    conn.close()
+    return{"message" : "student updated succesfully"}
+
     
