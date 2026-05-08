@@ -33,3 +33,26 @@ def get_students():
     conn.close()
     return{"students" : [dict(row) for row in rows]}
 
+
+@app.get("/students/{student_id}")
+def get_student(student_id: int): 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
+    row = cursor.fetchone()
+    conn.close
+    if row is None: 
+        return{"error" : "Student not found"}
+    return{"Studnet" : dict(row)}
+
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int): 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
+    conn.commit()
+    conn.close()
+    return{"message" : "Student deleted succesfully"}
+
+
+    
