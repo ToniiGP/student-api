@@ -49,7 +49,12 @@ def get_student(student_id: int):
 def delete_student(student_id: int): 
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
+    cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
+    row = cursor.fetchone()
+    if row is None: 
+         return{"error" : "Student not found"}
+    else: 
+        cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
     conn.commit()
     conn.close()
     return{"message" : "Student deleted succesfully"}
@@ -59,9 +64,15 @@ def delete_student(student_id: int):
 def put_student(student_id: int, student: Student): 
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
+    cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
+    row = cursor.fetchone()
+    if row is None: 
+         return{"error" : "Student not found"}
+    else: 
+        cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
     conn.commit()
     conn.close()
     return{"message" : "student updated succesfully"}
 
+    
     
