@@ -40,10 +40,10 @@ def get_student(student_id: int):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
     row = cursor.fetchone()
-    conn.close
+    conn.close()
     if row is None: 
         raise HTTPException(status_code=404, detail="Student not found")
-    return{"Studnet" : dict(row)}
+    return{"Student" : dict(row)}
 
 @app.delete("/students/{student_id}")
 def delete_student(student_id: int): 
