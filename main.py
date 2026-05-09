@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException 
 from database import initialize_db, get_connection
 from models import Student
 
@@ -42,7 +42,7 @@ def get_student(student_id: int):
     row = cursor.fetchone()
     conn.close
     if row is None: 
-        return{"error" : "Student not found"}
+        raise HTTPException(status_code=404, detail="Student not found")
     return{"Studnet" : dict(row)}
 
 @app.delete("/students/{student_id}")
@@ -52,9 +52,8 @@ def delete_student(student_id: int):
     cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
     row = cursor.fetchone()
     if row is None: 
-         return{"error" : "Student not found"}
-    else: 
-        cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
+         raise HTTPException(status_code=404, detail="Student not found")
+    cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
     conn.commit()
     conn.close()
     return{"message" : "Student deleted succesfully"}
@@ -67,9 +66,8 @@ def put_student(student_id: int, student: Student):
     cursor.execute("SELECT * FROM students WHERE id = ?", (student_id,))
     row = cursor.fetchone()
     if row is None: 
-         return{"error" : "Student not found"}
-    else: 
-        cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
+         raise HTTPException(status_code=404, detail="Student not found")
+    cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
     conn.commit()
     conn.close()
     return{"message" : "student updated succesfully"}
