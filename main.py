@@ -17,6 +17,10 @@ def root():
 def add_student(student : Student): 
     conn = get_connection()
     cursor = conn.cursor()
+    if not student.name: 
+        raise HTTPException(status_code=400, detail="Name can not be empty")
+    if student.grade < 0 or student.grade > 100: 
+        raise HTTPException(status_code=400, detail="Invalid grade value")
     cursor.execute("INSERT INTO students(name, grade) VALUES(?,?)", 
                    (student.name, student.grade))
     conn.commit()
@@ -67,6 +71,10 @@ def put_student(student_id: int, student: Student):
     row = cursor.fetchone()
     if row is None: 
          raise HTTPException(status_code=404, detail="Student not found")
+    if not student.name: 
+        raise HTTPException(status_code=400, detail="Name can not be empty")
+    if student.grade < 0 or student.grade > 100: 
+        raise HTTPException(status_code=400, detail="Invalid grade value")
     cursor.execute("UPDATE students SET name = ?, grade = ? WHERE id = ?", (student.name, student.grade, student_id))
     conn.commit()
     conn.close()
